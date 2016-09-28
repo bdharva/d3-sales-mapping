@@ -1,7 +1,4 @@
-import urllib.request
-import ast
-import csv
-import json
+import urllib.request, ast, csv, json
 
 class Area:
 
@@ -20,40 +17,35 @@ class ZipInfo:
 
 	def get(self, query, file_type='json'):
 		url = 'https://maps.googleapis.com/maps/api/geocode/%s?address=%s&key=%s' % (file_type, query, self.key)
-		print(url, '\n')
 		req = urllib.request.Request(url)
 		response = urllib.request.urlopen(req)
 		return response.read()
 
 orders = []
 
-f = open('orders.csv')
-csv_f = csv.reader(f)
-
-for row in csv_f:
-	if row[30] == 'US':
-		code = row[29].split('-')[0]
-		amount = float(row[12])
-		added = False
-		for order in orders:
-			if order.zipcode == code:
-				order.total += amount
-				added = True
-		if added == False:
-			orders.append(Area(code, amount))
-
-f.close()
+with open('orders.csv', newline='') as csvfile:
+	csv_f = csv.reader(csvfile)
+	for row in csv_f:
+		if row[30] == 'US':
+			code = row[29].split('-')[0]
+			amount = float(row[12])
+			added = False
+			for order in orders:
+				if order.zipcode == code:
+					order.total += amount
+					added = True
+			if added == False:
+				orders.append(Area(code, amount))
 
 with open('api_keys.json') as json_data:
 	d = json.load(json_data)
-	return api_key = (d['google'])
+	api_key = (d['google'])
 
 z = ZipInfo(api_key)
 
 for order in orders:
 	info = z.get(order.zipcode)
 	results = ast.literal_eval(info.decode('utf8'))
-	#print(json.dumps(results, sort_keys=True, indent=4))
 	lat = results['results'][0]['geometry']['location']['lat']
 	lng = results['results'][0]['geometry']['location']['lng']
 	order.add_info(lat, lng)
@@ -65,5 +57,3 @@ with open(f, "w") as output:
 	writer.writerow(['Zipcode','Profit','Lat','Lng'])
 	for order in orders:
 		writer.writerow([str(order.zipcode), str(order.total), str(order.lat), str(order.lng)])
-
-f.close()
