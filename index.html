@@ -2,13 +2,17 @@
 <meta charset="utf-8">
 <style>
 
+	body {
+		background-color: rgb(230,230,230);
+	}
+
 	.land {
-		fill: #ddd;
+		fill: rgb(220,220,220);;
 	}
 
 	.border {
 		fill: none;
-		stroke: #fff;
+		stroke: rgb(249,249,249);;
 		stroke-linejoin: round;
 		stroke-linecap: round;
 	}
@@ -18,6 +22,46 @@
 		fill-opacity: .5;
 		stroke: #fff;
 		stroke-width: 1px;
+	}
+
+	.bubble-0 {
+		fill: rgb(50, 200, 100);
+	}
+
+	.bubble-1 {
+		fill: rgb(200, 50, 100);
+	}
+
+	.bubble-2 {
+		fill: rgb(50, 100, 200);
+	}
+
+	.bubble-3 {
+		fill: rgb(100, 50, 200);
+	}
+
+	.bubble-4 {
+		fill: rgb(200, 100, 50);
+	}
+
+	.bubble-5 {
+		fill: rgb(100, 200, 50);
+	}
+
+	.bubble-6 {
+		fill: rgb(50, 200, 100);
+	}
+
+	.bubble-7 {
+		fill: rgb(200, 50, 100);
+	}
+
+	.bubble-8 {
+		fill: rgb(50, 100, 200);
+	}
+
+	.bubble-9 {
+		fill: rgb(100, 50, 200);
 	}
 
 	.bubble :hover {
@@ -40,13 +84,21 @@
 		height: auto;
 		padding: 10px;
 		background-color: rgb(255,255,255);;
-		-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-		-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 		pointer-events: none; /* ¡MUY IMPORTANTE! */
 		font-family: sans-serif;
 		font-size:12px;
-		color: rgb(100,100,100);;
+		color: rgb(100,100,100);
+		border: 1px solid rgb(200,200,200);
+	}
+
+	svg {
+		background-color: rgb(255,255,255);
+		margin: 20px auto;
+		position: relative;
+		display: block;
+		padding: 20px;
+		border-top: 10px solid rgb(60,75,90);
+		cursor: crosshair;
 	}
 
 </style>
@@ -126,6 +178,9 @@
 		.enter()
 		.append("circle")
 			.attr("class", "bubble")
+			.attr("class", function(d) {
+				return "bubble bubble-" + d.Zipcode.substring(0,1);
+			})
 			.attr("cx", function (d) {
 				return proj([d.Lng, d.Lat])[0];
 			})
