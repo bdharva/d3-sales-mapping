@@ -16,10 +16,6 @@ build/cb_2015_us_state_20m.shp: build/cb_2015_us_state_20m.zip
 build/states.json: build/cb_2015_us_state_20m.shp
 	node_modules/.bin/topojson \
 		-o $@ \
-		--projection='width = 960, height = 600, d3.geo.albersUsa() \
-			.scale(1280) \
-			.translate([width / 2, height / 2])' \
-		--simplify=.5 \
 		-- states=$<
 
 us.json: build/states.json

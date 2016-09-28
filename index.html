@@ -109,12 +109,12 @@
 	var width = 960,
 	height = 600;
 
-	var path = d3.geo.path()
-		.projection(null);
-
 	var proj = d3.geo.albersUsa()
 		.scale(1280)
 		.translate([width / 2, height / 2]);
+
+	var path = d3.geo.path()
+		.projection(proj);
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width)
@@ -136,7 +136,7 @@
 
 	});
 
-	d3.csv("orders_demos.csv", function(error, csv) {
+	d3.csv("orders_demos.csv", type, function(error, csv) {
 
 		if (error) return console.error(error);
 
@@ -202,13 +202,27 @@
 				barTooltip.html(tip)
 					.style("left", (d3.event.pageX) + "px")
 					.style("top", (d3.event.pageY) + "px");
-				})
-				.on("mouseout", function(d) {
-					barTooltip.transition()
-						.duration(500)
-						.style("opacity", 0);
-				});
-
+			})
+			.on("mouseout", function(d) {
+				barTooltip.transition()
+					.duration(500)
+					.style("opacity", 0);
+			});
 	});
+	function type(d) {
+
+		d['Profit'] = +d['Profit'];
+		d['Lat'] = +d['Lat'];
+		d['Lng'] = +d['Lng'];
+		d['Population'] = +d['Population'];
+		d['Median-Age'] = +d['Median-Age'];
+		d['Race-White'] = +d['Race-White'];
+		d['Median-Household-Income'] = +d['Median-Household-Income'];
+		d['Bachelors-Degree'] = +d['Bachelors-Degree'];
+		d['Graduate-Degree'] = +d['Graduate-Degree'];
+
+		return d;
+
+	}
 
 </script>
