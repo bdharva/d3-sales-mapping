@@ -101,4 +101,4 @@ with open('orders_demos.csv', 'w') as output:
 	writer = csv.writer(output, lineterminator='\n')
 	writer.writerow(['Zipcode','Profit','Lat','Lng','Population','Median-Age','Race-White','Median-Household-Income','Bachelors-Degree','Graduate-Degree'])
 	for order in orders:
-		writer.writerow([str(order.zipcode), str(order.total), str(order.lat), str(order.lng), str(order.demos)])
+		writer.writerow([str(order.zipcode), str(order.total), str(order.lat), str(order.lng), str(order.demos[0]), str(order.demos[1]), str(order.demos[2]), str(order.demos[3]), str(order.demos[4]), str(order.demos[5])])
