@@ -35,6 +35,20 @@
 		text-anchor: middle;
 	}
 
+	.tooltip {
+		position: absolute;
+		height: auto;
+		padding: 10px;
+		background-color: rgb(255,255,255);;
+		-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+		pointer-events: none; /* ¡MUY IMPORTANTE! */
+		font-family: sans-serif;
+		font-size:12px;
+		color: rgb(100,100,100);;
+	}
+
 </style>
 <body>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -79,6 +93,12 @@
 			.domain([0, 1e6])
 			.range([0, 15]);
 
+		function formatSales(val) {
+			var prefix = d3.formatPrefix(val),
+				format = d3.format(".2f");
+			return format(prefix.scale(val)) + prefix.symbol;
+		}
+
 		var legend = svg.append("g")
 			.attr("class", "legend")
 			.attr("transform", "translate(" + (width - 50) + "," + (height - 20) + ")")
@@ -95,6 +115,11 @@
 			.attr("dy", "1.3em")
 			.text(d3.format(".1s"));
 
+		var barTooltip = d3.select("body").append("div")
+			.attr("class", "tooltip")
+			.style("opacity", 0)
+			.style("width",600);
+
 		svg.selectAll("circle")
 			.data(csv)
 			/*.sort(function(a, b) { return b.Profit - a.Profit; })*/
@@ -110,6 +135,22 @@
 			.attr("r", function (d) {
 				return Math.sqrt(parseInt(d.Profit));
 			})
+			.on("mouseover", function(d) {
+				barTooltip.transition()
+					.duration(500)
+					.style("opacity", .7);
+				var tip = "<strong>" + d.Zipcode + "</strong><br/>";
+				var tip = tip+"$" + formatSales(d.Profit);
+				barTooltip.html(tip)
+					.style("left", (d3.event.pageX) + "px")
+					.style("top", (d3.event.pageY) + "px");
+				})
+				.on("mouseout", function(d) {
+					barTooltip.transition()
+						.duration(500)
+						.style("opacity", 0);
+				});
+
 	});
 
 </script>
