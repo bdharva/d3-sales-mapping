@@ -10,6 +10,11 @@ class Area:
 		self.lat = lat
 		self.lng = lng
 
+	def add_demos(self, queries):
+		self.demos = []
+		for item in queries:
+			self.demos.append(item)
+
 class ZipInfo:
 
 	def __init__(self, key):
@@ -17,6 +22,24 @@ class ZipInfo:
 
 	def get(self, query, file_type='json'):
 		url = 'https://maps.googleapis.com/maps/api/geocode/%s?address=%s&key=%s' % (file_type, query, self.key)
+		req = urllib.request.Request(url)
+		response = urllib.request.urlopen(req)
+		return response.read()
+
+class Census:
+
+	def __init__(self, key):
+		self.key = key
+
+	def get(self, fields, geo, year=2014, dataset='acs5'):
+		fields = [','.join(fields)]
+		base_url = 'http://api.census.gov/data/%s/%s/profile?get=' % (str(year), dataset)
+		query = fields
+		for item in geo:
+			query.append(item)
+		add_url = '&'.join(query)
+		key_url = '&key=' + self.key
+		url = base_url + add_url + key_url
 		req = urllib.request.Request(url)
 		response = urllib.request.urlopen(req)
 		return response.read()
@@ -39,9 +62,20 @@ with open('orders.csv', newline='') as csvfile:
 
 with open('api_keys.json') as json_data:
 	d = json.load(json_data)
-	api_key = (d['google'])
+	api_key_c = (d['census'])
+	api_key_g = (d['google'])
 
-z = ZipInfo(api_key)
+c = Census(api_key_c)
+z = ZipInfo(api_key_g)
+
+query_for = [
+	'DP05_0001E',	# total population
+	'DP05_0017E',	# median age
+	'DP05_0032PE',	# race:white (%)
+	'DP03_0062E',	# median household income
+	'DP02_0064PE',	# bachelors degree (%)
+	'DP02_0065PE'	# graduate degree (%)
+	]
 
 for order in orders:
 	info = z.get(order.zipcode)
@@ -49,11 +83,22 @@ for order in orders:
 	lat = results['results'][0]['geometry']['location']['lat']
 	lng = results['results'][0]['geometry']['location']['lng']
 	order.add_info(lat, lng)
+	info = c.get(query_for, ['for=zip+code+tabulation+area:'+order.zipcode])
+	try:
+		results = ast.literal_eval(info.decode('utf8'))
+	except:
+		for x in range(0, len(query_for)):
+			demos.append('null')
+		order.add_demos(demos)
+		continue
+	else:
+		demos = []
+		for x in range(0, len(query_for)):
+			demos.append(results[1][x])
+		order.add_demos(demos)
 
-f = "orders_zips.csv"
-
-with open(f, "w") as output:
+with open('orders_demos.csv', 'w') as output:
 	writer = csv.writer(output, lineterminator='\n')
-	writer.writerow(['Zipcode','Profit','Lat','Lng'])
+	writer.writerow(['Zipcode','Profit','Lat','Lng','Population','Median-Age','Race-White','Median-Household-Income','Bachelors-Degree','Graduate-Degree'])
 	for order in orders:
-		writer.writerow([str(order.zipcode), str(order.total), str(order.lat), str(order.lng)])
+		writer.writerow([str(order.zipcode), str(order.total), str(order.lat), str(order.lng), str(order.demos)])
