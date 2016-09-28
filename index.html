@@ -14,10 +14,10 @@
 	}
 
 	.bubble {
-		fill: brown;
+		fill: rgb(50,200,100);
 		fill-opacity: .5;
 		stroke: #fff;
-		stroke-width: .5px;
+		stroke-width: 1px;
 	}
 
 	.bubble :hover {
@@ -47,29 +47,13 @@
 	var path = d3.geo.path()
 		.projection(null);
 
-	var radius = d3.scale.sqrt()
-		.domain([0, 1e6])
-		.range([0, 15]);
+	var proj = d3.geo.albersUsa()
+		.scale(1280)
+		.translate([width / 2, height / 2]);
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width)
 		.attr("height", height);
-
-	var legend = svg.append("g")
-		.attr("class", "legend")
-		.attr("transform", "translate(" + (width - 50) + "," + (height - 20) + ")")
-	.selectAll("g")
-		.data([1e6, 3e6, 6e6])
-	.enter().append("g");
-
-	legend.append("circle")
-		.attr("cy", function(d) { return -radius(d); })
-		.attr("r", radius);
-
-	legend.append("text")
-		.attr("y", function(d) { return -2 * radius(d); })
-		.attr("dy", "1.3em")
-		.text(d3.format(".1s"));
 
 	d3.json("us.json", function(error, us) {
 
@@ -85,25 +69,38 @@
 			.attr("class", "border border--state")
 			.attr("d", path);
 
-			svg.append("g")
-				.attr("class", "bubble")
-			.selectAll("circle")
-				.data(topojson.feature(us, us.objects.counties).features)
-				.sort(function(a, b) { return b.properties.population - a.properties.population; })
-			.enter().append("circle")
-				.attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("r", function(d) { return radius(d.properties.population); })
-
 	});
 
-	d3.csv("orders_zips.csv", function(error, csv) {
+	d3.csv("orders_demos.csv", function(error, csv) {
 
 		if (error) return console.error(error);
 
+		var radius = d3.scale.sqrt()
+			.domain([0, 1e6])
+			.range([0, 15]);
+
+		var legend = svg.append("g")
+			.attr("class", "legend")
+			.attr("transform", "translate(" + (width - 50) + "," + (height - 20) + ")")
+		.selectAll("g")
+			.data([1e6, 3e6, 6e6])
+		.enter().append("g");
+
+		legend.append("circle")
+			.attr("cy", function(d) { return -radius(d); })
+			.attr("r", radius);
+
+		legend.append("text")
+			.attr("y", function(d) { return -2 * radius(d); })
+			.attr("dy", "1.3em")
+			.text(d3.format(".1s"));
+
 		svg.selectAll("circle")
 			.data(csv)
+			/*.sort(function(a, b) { return b.Profit - a.Profit; })*/
 		.enter()
 		.append("circle")
+			.attr("class", "bubble")
 			.attr("cx", function (d) {
 				return proj([d.Lng, d.Lat])[0];
 			})
@@ -113,8 +110,6 @@
 			.attr("r", function (d) {
 				return Math.sqrt(parseInt(d.Profit));
 			})
-			.style("fill", "yellow")
-			.style("opacity", 0.75);
 	});
 
 </script>
