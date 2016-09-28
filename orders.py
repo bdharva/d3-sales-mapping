@@ -44,7 +44,9 @@ for row in csv_f:
 
 f.close()
 
-api_key = "" # read from file
+with open('api_keys.json') as json_data:
+	d = json.load(json_data)
+	return api_key = (d['google'])
 
 z = ZipInfo(api_key)
 
