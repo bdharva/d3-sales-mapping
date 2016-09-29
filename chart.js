@@ -81,14 +81,24 @@ var Chart = (function(document,window,d3) {
 				.style("opacity", 0);
 		})
 		.on("click", function(d) {
-			var stat = "<div class='stat'>Zipcode<h2>" + d.Zipcode + "</h2></div>";
-			stat = stat + "<div class='stat'>Profit<h2>$" + d3.format(",.0f")(d.Profit) + "</h2></div>";
-			stat = stat + "<div class='stat'>Population<h2>" + d3.format(",.0f")(d.Population) + "</h2></div>";
-			stat = stat + "<div class='stat'>Race (White)<h2>" + d3.format(",.1f")(d['Race-White']) + "%</h2></div>";
-			stat = stat + "<div class='stat'>Median Age<h2>" + d3.format(",.1f")(d['Median-Age']) +  "</h2></div>";
-			stat = stat + "<div class='stat'>Median Household Income<h2>$" + d3.format(",.0f")(d['Median-Household-Income']) + "</h2></div>";
-			stat = stat + "<div class='stat'>Bachelors Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Bachelors-Degree']) + "%</h2></div>";
-			stat = stat + "<div class='stat'>Graduate Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Graduate-Degree']) + "%</h2></div>";
+			var activeClass = "active";
+			var alreadyIsActive = d3.select(this).classed(activeClass);
+			svg.selectAll(".bubble")
+				.classed(activeClass, false);
+			d3.select(this).classed(activeClass, !alreadyIsActive);
+			var stat;
+			if (alreadyIsActive == false) {
+				stat = "<div class='stat'>Zipcode<h2>" + d.Zipcode + "</h2></div>";
+				stat = stat + "<div class='stat'>Profit<h2>$" + d3.format(",.0f")(d.Profit) + "</h2></div>";
+				stat = stat + "<div class='stat'>Population<h2>" + d3.format(",.0f")(d.Population) + "</h2></div>";
+				stat = stat + "<div class='stat'>Race (White)<h2>" + d3.format(",.1f")(d['Race-White']) + "%</h2></div>";
+				stat = stat + "<div class='stat'>Median Age<h2>" + d3.format(",.1f")(d['Median-Age']) +  "</h2></div>";
+				stat = stat + "<div class='stat'>Median Household Income<h2>$" + d3.format(",.0f")(d['Median-Household-Income']) + "</h2></div>";
+				stat = stat + "<div class='stat'>Bachelors Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Bachelors-Degree']) + "%</h2></div>";
+				stat = stat + "<div class='stat'>Graduate Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Graduate-Degree']) + "%</h2></div>";
+			} else {
+				stat = "<h3>Click on a zip code bubble to view demographic statistics for the area...</h3>";
+			}
 			stats.html(stat);
 		});
 

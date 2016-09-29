@@ -59,8 +59,7 @@ svg {
 	overflow: auto;
 }
 
-.stats h2,
-.stats h3 {
+.stats h2 {
 	margin-top: 0;
 }
 
@@ -92,6 +91,11 @@ svg {
 
 .bubble:hover {
 	fill-opacity: 1;
+}
+
+.bubble.active {
+	fill-opacity: 1;
+	stroke: rgb(60,75,90);
 }
 
 .bubble-0,
@@ -131,10 +135,6 @@ svg {
 
 .bubble-9 {
 	fill: rgb(100, 50, 200);
-}
-
-.bubble :hover {
-	opacity: 1.0;
 }
 
 .legend circle {
