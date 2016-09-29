@@ -7,17 +7,70 @@ body {
   color: rgb(128,128,128);
 }
 
-h2, h3 {
-  text-align: center;
+h1, h2, h3, h4 {
   color: rgb(60,75,90);
 }
 
 #chart {
 	max-width: 1200px;
+	height: auto;
+	overflow: auto;
 	padding: 20px;
 	background: rgb(210,210,210);;
 	margin: 0 auto;
 	display: block;
+}
+
+.pane {
+	height: auto;
+	overflow: auto;
+	display: block;
+	float: left;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#pane-1 {
+	width: 75%;
+}
+
+#pane-2 {
+	width: 25%;
+}
+
+svg,
+.stats {
+	background-color: rgb(255,255,255);
+	margin: 0 auto;
+	position: relative;
+	display: block;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+svg {
+	border-top: 10px solid rgb(60,75,90);
+	cursor: crosshair;
+}
+
+.stats {
+	border-top: 10px solid rgb(230,80,80);
+	height: auto;
+	overflow: auto;
+}
+
+.stats h2,
+.stats h3 {
+	margin-top: 0;
+}
+
+.stat {
+	width: 100%;
+	height: auto;
+	overflow: auto;
+	position: relative;
+	display: block;
+	float: left;
 }
 
 .land {
@@ -35,6 +88,10 @@ h2, h3 {
 	stroke: rgb(255,255,255);
 	stroke-width: 1px;
 	fill-opacity: .5;
+}
+
+.bubble:hover {
+	fill-opacity: 1;
 }
 
 .bubble-0,
@@ -103,13 +160,42 @@ h2, h3 {
 	border: 1px solid rgb(200,200,200);
 }
 
-svg {
-	background-color: rgb(255,255,255);
-	margin: 20px auto;
-	position: relative;
-	display: block;
-	padding: 20px;
-	border-top: 10px solid rgb(60,75,90);
-	cursor: crosshair;
-	box-sizing: border-box;
+@media (max-width:960px){
+
+	#pane-1,
+	#pane-2 {
+		width: 100%;
+	}
+
+	.stat {
+		width: 25%;
+		padding: 5px;
+		box-sizing: border-box;
+	}
+
+}
+
+@media (max-width:820px){
+
+	.stat {
+		width: 33.33%;
+	}
+
+}
+
+@media (max-width:640px){
+
+	.stat {
+		width: 50%;
+	}
+
+}
+
+@media (max-width:480px){
+
+	.stat {
+		width: 100%;
+		padding: 0;
+	}
+
 }

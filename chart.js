@@ -1,6 +1,6 @@
 var Chart = (function(document,window,d3) {
 
-	var svg, map, csv, proj, path, nation, states, bubbles, tooltip, tooltipper, width, height, padding, radius;
+	var svg, map, csv, proj, path, nation, states, bubbles, tooltip, stats, width, height, padding, radius;
 
 	d3.queue()
 		.defer(d3.json, 'us.json')
@@ -30,7 +30,7 @@ var Chart = (function(document,window,d3) {
 		map = us;
 		csv = type(orders);
 
-		svg = d3.select('#chart')
+		svg = d3.select('#pane-1')
 			.append('svg');
 
 		proj = d3.geo.albersUsa()
@@ -60,17 +60,17 @@ var Chart = (function(document,window,d3) {
 			.attr("class", "tooltip")
 			.style("opacity", 0);
 
+		stats = d3.select("#pane-2")
+			.append("div")
+			.attr("class", "stats")
+			.html("<h3>Click on a zip code bubble to view demographic statistics for the area...</h3>")
+
 		bubbles.on("mouseover", function(d) {
 			tooltip.transition()
 				.duration(500)
 				.style("opacity", .7);
-			var tip = "<strong>" + d.Zipcode + "</strong><br/>";
-			var tip = tip+"$" + d3.format(",.0f")(d.Profit) + "<br/><br/>";
-			var tip = tip + d3.format(",.0f")(d.Population) + " people, " + d3.format(",.1f")(d['Race-White']) + "% white<br/>";
-			var tip = tip + "Median Age: " + d3.format(",.1f")(d['Median-Age']) +  "<br/>";
-			var tip = tip + "Median Income: $" + d3.format(",.0f")(d['Median-Household-Income']) + "<br/>";
-			var tip = tip + d3.format(",.1f")(d['Bachelors-Degree']) + "% with Bachelors degrees <br/>";
-			var tip = tip + d3.format(",.1f")(d['Graduate-Degree']) + "% with Graduate degrees";
+			var tip = "<strong>Zip Code:</strong> " + d.Zipcode + "<br/>";
+			tip = tip + "<strong>Profit:</strong> $" + d3.format(",.0f")(d.Profit);
 			tooltip.html(tip)
 				.style("left", (d3.event.pageX) + "px")
 				.style("top", (d3.event.pageY) + "px");
@@ -79,6 +79,17 @@ var Chart = (function(document,window,d3) {
 			tooltip.transition()
 				.duration(500)
 				.style("opacity", 0);
+		})
+		.on("click", function(d) {
+			var stat = "<div class='stat'>Zipcode<h2>" + d.Zipcode + "</h2></div>";
+			stat = stat + "<div class='stat'>Profit<h2>$" + d3.format(",.0f")(d.Profit) + "</h2></div>";
+			stat = stat + "<div class='stat'>Population<h2>" + d3.format(",.0f")(d.Population) + "</h2></div>";
+			stat = stat + "<div class='stat'>Race (White)<h2>" + d3.format(",.1f")(d['Race-White']) + "%</h2></div>";
+			stat = stat + "<div class='stat'>Median Age<h2>" + d3.format(",.1f")(d['Median-Age']) +  "</h2></div>";
+			stat = stat + "<div class='stat'>Median Household Income<h2>$" + d3.format(",.0f")(d['Median-Household-Income']) + "</h2></div>";
+			stat = stat + "<div class='stat'>Bachelors Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Bachelors-Degree']) + "%</h2></div>";
+			stat = stat + "<div class='stat'>Graduate Degree (Adults 25+)<h2>" + d3.format(",.1f")(d['Graduate-Degree']) + "%</h2></div>";
+			stats.html(stat);
 		});
 
 		render();
@@ -91,7 +102,7 @@ var Chart = (function(document,window,d3) {
 
 		radius = d3.scale.sqrt()
 			.domain([0, d3.max(csv, function(d) { return d.Profit })])
-			.range([0, width/150]);
+			.range([0, width/100]);
 
 		svg
 			.attr('width', width)
@@ -125,7 +136,7 @@ var Chart = (function(document,window,d3) {
 
 	function updateDimensions() {
 
-		var wide = getElementContentWidth('chart');
+		var wide = getElementContentWidth('pane-1');
 		padding = 20;
 		width =  wide - 2 * padding;
 		height = wide / 1.5 - 2 * padding;
