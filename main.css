@@ -37,40 +37,39 @@ h2, h3 {
 	fill-opacity: .5;
 }
 
-.bubble-0 {
+.bubble-0,
+.bubble-1 {
 	fill: rgb(50, 200, 100);
 }
 
-.bubble-1 {
-	fill: rgb(200, 50, 100);
+.s {
+
 }
 
 .bubble-2 {
-	fill: rgb(50, 100, 200);
-}
-
-.bubble-3 {
-	fill: rgb(100, 50, 200);
-}
-
-.bubble-4 {
-	fill: rgb(200, 100, 50);
-}
-
-.bubble-5 {
-	fill: rgb(100, 200, 50);
-}
-
-.bubble-6 {
-	fill: rgb(50, 200, 100);
-}
-
-.bubble-7 {
 	fill: rgb(200, 50, 100);
 }
 
-.bubble-8 {
+.bubble-3 {
 	fill: rgb(50, 100, 200);
+}
+
+.bubble-4,
+.bubble-5,
+.bubble-6 {
+	fill: rgb(200, 100, 50);
+}
+
+.b {
+
+}
+
+.bubble-7 {
+	fill: rgb(100, 200, 50);
+}
+
+.bubble-8 {
+	fill: rgb(200, 50, 100);
 }
 
 .bubble-9 {

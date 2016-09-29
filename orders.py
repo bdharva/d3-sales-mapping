@@ -60,6 +60,21 @@ with open('orders.csv', newline='') as csvfile:
 			if added == False:
 				orders.append(Area(code, amount))
 
+with open('kickstarter.csv', newline='') as csvfile:
+	csv_f = csv.reader(csvfile)
+	for row in csv_f:
+		if row[4] == 'US':
+			code = row[19].split('-')[0]
+			amount = float(row[8][1:-4])
+			if code != '':
+				added = False
+				for order in orders:
+					if order.zipcode == code:
+						order.total += amount
+						added = True
+				if added == False:
+					orders.append(Area(code, amount))
+
 with open('api_keys.json') as json_data:
 	d = json.load(json_data)
 	api_key_c = (d['census'])

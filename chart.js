@@ -1,6 +1,6 @@
 var Chart = (function(document,window,d3) {
 
-	var svg, map, csv, proj, path, nation, states, bubbles, tooltip, tooltipper, width, height, padding;
+	var svg, map, csv, proj, path, nation, states, bubbles, tooltip, tooltipper, width, height, padding, radius;
 
 	d3.queue()
 		.defer(d3.json, 'us.json')
@@ -47,7 +47,7 @@ var Chart = (function(document,window,d3) {
 
 		bubbles = svg.selectAll("circle")
 			.data(csv)
-			.sort(function(a, b) { return b.Profit - a.Profit; })
+				.sort(function(a, b) { return parseInt(b.Profit) - parseInt(a.Profit); })
 		.enter()
 		.append("circle")
 			.attr("class", "bubble")
@@ -65,11 +65,12 @@ var Chart = (function(document,window,d3) {
 				.duration(500)
 				.style("opacity", .7);
 			var tip = "<strong>" + d.Zipcode + "</strong><br/>";
-			var tip = tip+"$" + d.Profit + "<br/><br/>";
-			var tip = tip + d.Population + " people, " + d['Race-White'] + "% white<br/>";
-			var tip = tip + "Median Age: " + d['Median-Age'] +  "<br/>";
-			var tip = tip + "Median Income: " + d['Median-Household-Income'] + "<br/>";
-			var tip = tip + d['Bachelors-Degree'] + "% with Bachelors degrees";
+			var tip = tip+"$" + d3.format(",.0f")(d.Profit) + "<br/><br/>";
+			var tip = tip + d3.format(",.0f")(d.Population) + " people, " + d3.format(",.1f")(d['Race-White']) + "% white<br/>";
+			var tip = tip + "Median Age: " + d3.format(",.1f")(d['Median-Age']) +  "<br/>";
+			var tip = tip + "Median Income: $" + d3.format(",.0f")(d['Median-Household-Income']) + "<br/>";
+			var tip = tip + d3.format(",.1f")(d['Bachelors-Degree']) + "% with Bachelors degrees <br/>";
+			var tip = tip + d3.format(",.1f")(d['Graduate-Degree']) + "% with Graduate degrees";
 			tooltip.html(tip)
 				.style("left", (d3.event.pageX) + "px")
 				.style("top", (d3.event.pageY) + "px");
@@ -87,6 +88,10 @@ var Chart = (function(document,window,d3) {
 	function render() {
 
 		updateDimensions();
+
+		radius = d3.scale.sqrt()
+			.domain([0, d3.max(csv, function(d) { return d.Profit })])
+			.range([0, width/150]);
 
 		svg
 			.attr('width', width)
@@ -113,7 +118,7 @@ var Chart = (function(document,window,d3) {
 				return proj([d.Lng, d.Lat])[1];
 			})
 			.attr("r", function (d) {
-				return Math.sqrt(parseInt(d.Profit));
+				return radius(d.Profit);
 			})
 
 	}
